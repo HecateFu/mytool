@@ -1,0 +1,9 @@
+spring:
+  freemarker:
+    template-loader-path: classpath:/template
+    suffix: .ftl
+# 日志
+logging:
+  file: mytool.log
+  level:
+    org.fcx.mytool: info
