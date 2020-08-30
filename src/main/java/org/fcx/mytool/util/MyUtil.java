@@ -5,8 +5,11 @@ import org.fcx.mytool.exception.MyException;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -60,5 +63,23 @@ public class MyUtil {
         }
         return rules;
     }
-
+    /**
+     * 日期字符串转换成 java.util.Date 类型，格式 yyyy-MM-dd
+     * @param dateStr 日期字符串
+     * @return 日期,如果传入空字符串返回 null
+     */
+    public static Date strToDate(String dateStr) {
+        if(StringUtils.isEmpty(dateStr)){
+            return null;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date d = sdf.parse(dateStr);
+            return d;
+        } catch (ParseException e) {
+            MyException mye = new MyException("字符串转日期类型，解析异常："+e.getMessage());
+            mye.setStackTrace(e.getStackTrace());
+            throw mye;
+        }
+    }
 }
