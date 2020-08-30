@@ -39,7 +39,7 @@ public class FqController {
         Map<String,Object> param = new HashMap<String,Object>();
         param.put("updateUrl",updateUrl);
         param.put("proxies",proxies);
-        return new ModelAndView(software,param);
+        return new ModelAndView("proxy/"+software,param);
     }
 
     /**
