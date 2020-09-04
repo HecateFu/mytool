@@ -9,7 +9,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import java.util.Arrays;
 @Slf4j
 @SpringBootApplication
-@MapperScan("org.fcx.mytool.mapper")
+@MapperScan("org.fcx.mytool.dao.mapper")
 public class MyToolApp {
 
     public static void main(String[] args) {

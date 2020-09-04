@@ -1,5 +1,6 @@
-package org.fcx.mytool.mapper;
+package org.fcx.mytool.dao;
 
+import org.fcx.mytool.dao.mapper.FundMapper;
 import org.fcx.mytool.entity.security.Fund;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,7 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest("spring.profiles.active=dev")
-public class DaoTest {
+public class MysqlTest {
     @Autowired
     FundMapper dao;
 
