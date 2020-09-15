@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
@@ -34,5 +36,18 @@ public class FqControllerTest {
         String raw = fq.downloadProxyServersRaw(link);
         List<Proxy> proxies = fq.parseProxyList(raw);
         proxies.stream().forEach(System.out::println);
+    }
+
+    @Test
+    public void updateLinksTest () throws  Exception{
+        String resp = mvc.perform(MockMvcRequestBuilders
+                .get("/fq/updatelink")
+                .param("key","ss")
+                .param("link","https%3A%2F%2Fwww.111003.ml%2F%2Flink%2FXp7XUEOqe3dYQVNu%3Fsub%3D1"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        System.out.println(resp);
     }
 }

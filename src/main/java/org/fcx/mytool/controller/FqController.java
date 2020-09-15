@@ -9,12 +9,11 @@ import org.fcx.mytool.entity.proxy.clash.Config;
 import org.fcx.mytool.entity.proxy.clash.Proxy;
 import org.fcx.mytool.exception.MyException;
 import org.fcx.mytool.util.MyUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
@@ -22,14 +21,18 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.*;
 
 @Slf4j
 @Controller
 @RequestMapping("fq")
 public class FqController {
+    @Autowired
+    private ProxyLinks proxyLinks;
 
-    private static Map<String,List<Proxy>> proxiesMap = new HashMap<>();
+    private Map<String,List<Proxy>> proxiesMap = new HashMap<>();
 
     @ResponseBody
     @RequestMapping("config/{alias}.yml")
@@ -90,7 +93,7 @@ public class FqController {
             log.info("parse proxy list {} ms", pe - ps);
             return proxies;
         } catch (Exception e) {
-            log.error("downloadAndParseProxies link : "+link,e);
+            log.error("downloadAndParseProxies error link : "+link,e);
             return null;
         }
     }
@@ -101,13 +104,31 @@ public class FqController {
     @RequestMapping("refresh")
     @ResponseBody
     public String preLoadProxies() {
-        for (Map.Entry<String,String> links:ProxyLinks.linksMap.entrySet()){
+        for (Map.Entry<String,String> links: proxyLinks.linksMap.entrySet()){
             String key = links.getKey();
             String link = links.getValue();
             List<Proxy> proxies = downloadAndParseProxies(link);
             proxiesMap.put(key,proxies);
         }
         return "success";
+    }
+
+    @GetMapping("updatelink")
+    @ResponseBody
+    public Map<String,String> updateLinks(@RequestParam String key,
+                                          @RequestParam(required = false) String link,
+                                          @RequestParam(required = false) String del){
+        if("true".equals(del)){
+            proxyLinks.linksMap.remove(key);
+        } else {
+            try {
+                proxyLinks.linksMap.put(key, URLDecoder.decode(link,"utf-8"));
+            } catch (UnsupportedEncodingException e) {
+                log.error("updatelinks decode links error",e);
+            }
+        }
+        proxyLinks.updateProxyLinks();
+        return proxyLinks.linksMap;
     }
 
     /**
