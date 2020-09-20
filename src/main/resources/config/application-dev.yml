@@ -7,3 +7,6 @@ spring:
     url: jdbc:mysql://localhost:3306/mytool?serverTimezone=Asia/Shanghai
     username: hecate
     password: fcx9mysql
+logging:
+  level:
+    org.fcx.mytool: info

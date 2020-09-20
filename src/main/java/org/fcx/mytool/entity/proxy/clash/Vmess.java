@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.fcx.mytool.exception.MyException;
+import org.fcx.mytool.util.JacksonObjectMapperUtil;
 import org.fcx.mytool.util.MyUtil;
 import org.springframework.util.StringUtils;
 
@@ -41,18 +42,14 @@ public class Vmess extends Proxy {
         String raw = link.substring(8);
         String serverJsonStr = MyUtil.base64Decode(raw);
         log.debug(serverJsonStr);
-        ObjectMapper om = new ObjectMapper();
+        ObjectMapper om = JacksonObjectMapperUtil.getJsonMapper();
         try {
             Map<String,?> map = om.readValue(serverJsonStr,Map.class);
             setName((String)map.get("ps"));
             if(getName().startsWith("??")){
                 setName(getName().replace("??",""));
             }
-            if(StringUtils.isEmpty(map.get("host"))){
-                setServer((String)map.get("add"));
-            } else {
-                setServer((String)map.get("host"));
-            }
+            setServer((String)map.get("add"));
             if (map.get("port") instanceof String) {
                 setPort(Integer.parseInt((String)map.get("port")));
             }else {
@@ -77,7 +74,12 @@ public class Vmess extends Proxy {
                     this.wsPath="/";
                 }
                 this.wsHeaders = new HashMap<>();
-                this.wsHeaders.put("Host",(String)map.get("add"));
+//                this.wsHeaders.put("Host",(String)map.get("add"));
+                if(StringUtils.isEmpty(map.get("host"))){
+                    this.wsHeaders.put("Host",(String)map.get("add"));
+                } else {
+                    this.wsHeaders.put("Host",(String)map.get("host"));
+                }
             }
         } catch (IOException e) {
             log.error("create vmess failed",e);

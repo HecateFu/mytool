@@ -7,3 +7,5 @@ logging:
   file: mytool.log
   level:
     org.fcx.mytool: info
+mytool:
+  proxy-links-file-path: file:proxy_links.json

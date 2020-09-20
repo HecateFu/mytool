@@ -12,6 +12,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -49,5 +51,13 @@ public class FqControllerTest {
                 .getResponse()
                 .getContentAsString();
         System.out.println(resp);
+    }
+
+    @Test
+    public void loadProxiesTest () {
+        Instant s = Instant.now();
+        fq.preLoadProxies();
+        Instant e = Instant.now();
+        System.out.println(Duration.between(s,e).getSeconds());
     }
 }
