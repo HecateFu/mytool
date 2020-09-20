@@ -89,7 +89,7 @@ public class FqController {
             long ds = System.currentTimeMillis();
             String raw = this.downloadProxyServersRaw(link);
             long de = System.currentTimeMillis();
-            log.info("finish download {},time {} ms", link,(de - ds));
+            log.info("finish download {} ,time {} ms", link,(de - ds));
             if (StringUtils.isEmpty(raw)){
                 log.warn("can't download raw proxy info from link: {} ,check link",link);
                 return null;
@@ -156,7 +156,7 @@ public class FqController {
         if(HttpStatus.OK.equals(resp.getStatusCode())){
             return raw;
         } else {
-            log.error("get proxy servers info failed, request link {}, resp status code{},resp body {}",link,resp.getStatusCode(),raw);
+            log.error("get proxy servers info failed, request link {} , resp status code{},resp body {}",link,resp.getStatusCode(),raw);
             throw new MyException("get proxy servers info failed");
         }
     }
