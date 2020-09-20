@@ -4,14 +4,16 @@ import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.web.client.RestTemplate;
 
-@Profile("pro")
 @Configuration
-public class HttpsConfig {
+public class WebUtilConfig {
+    @Profile("pro")
     @Bean
     public Connector httpConnector(){
         Connector connector=new Connector("org.apache.coyote.http11.Http11NioProtocol");
@@ -23,6 +25,7 @@ public class HttpsConfig {
         connector.setRedirectPort(443);
         return connector;
     }
+    @Profile("pro")
     @Bean
     public TomcatServletWebServerFactory tomcatServletWebServerFactory(Connector connector){
         TomcatServletWebServerFactory tomcat=new TomcatServletWebServerFactory(){
@@ -38,5 +41,9 @@ public class HttpsConfig {
         };
         tomcat.addAdditionalTomcatConnectors(connector);
         return tomcat;
+    }
+    @Bean
+    public RestTemplate createRestTemplate (RestTemplateBuilder rtb) {
+        return rtb.build();
     }
 }

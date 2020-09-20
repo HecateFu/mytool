@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -27,6 +29,8 @@ public class FqController {
     private ProxyLinks proxyLinks;
 
     private Map<String,List<Proxy>> proxiesMap = new HashMap<>();
+    @Autowired
+    private RestTemplate rt;
 
     @RequestMapping("config/{software}/{alias}")
     public ModelAndView getTpConfig(@PathVariable("software")String software, @PathVariable("alias")String alias, HttpServletRequest servletRequest){
@@ -52,16 +56,19 @@ public class FqController {
      */
     public List<Proxy> downloadAndParseProxies(String link){
         try {
-            log.info("start download server from {}", link);
+//            log.info("start download server from {}", link);
             long ds = System.currentTimeMillis();
             String raw = this.downloadProxyServersRaw(link);
             long de = System.currentTimeMillis();
-            log.info("finish download {} ms", de - ds);
-
+            log.info("finish download {},time {} ms", link,(de - ds));
+            if (StringUtils.isEmpty(raw)){
+                log.warn("can't download raw proxy info from link: {} ,check link",link);
+                return null;
+            }
             long ps = System.currentTimeMillis();
             List<Proxy> proxies = this.parseProxyList(raw);
             long pe = System.currentTimeMillis();
-            log.info("parse proxy list {} ms", pe - ps);
+            log.info("parse {} proxy list {} ms", link, pe - ps);
             return proxies;
         } catch (Exception e) {
             log.error("downloadAndParseProxies error link : "+link,e);
@@ -75,12 +82,12 @@ public class FqController {
     @RequestMapping("refresh")
     @ResponseBody
     public String preLoadProxies() {
-        for (Map.Entry<String,String> links: proxyLinks.linksMap.entrySet()){
-            String key = links.getKey();
-            String link = links.getValue();
-            List<Proxy> proxies = downloadAndParseProxies(link);
-            proxiesMap.put(key,proxies);
-        }
+        proxiesMap = proxyLinks.linksMap.entrySet().parallelStream().map(link -> {
+            String key = link.getKey();
+            String value = link.getValue();
+            List<Proxy> proxies = downloadAndParseProxies(value);
+            return new HashMap.SimpleEntry<>(key,proxies);
+        }).collect(Collectors.toMap(Map.Entry::getKey,Map.Entry::getValue));
         return "success";
     }
 
@@ -93,6 +100,9 @@ public class FqController {
             proxyLinks.linksMap.remove(key);
         } else {
             try {
+                if (StringUtils.isEmpty(link)) {
+                    return Collections.singletonMap("error","miss link");
+                }
                 proxyLinks.linksMap.put(key, URLDecoder.decode(link,"utf-8"));
             } catch (UnsupportedEncodingException e) {
                 log.error("updatelinks decode links error",e);
@@ -108,7 +118,6 @@ public class FqController {
      * @return
      */
     public String downloadProxyServersRaw(String link){
-        RestTemplate rt = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.TEXT_PLAIN));
         headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");

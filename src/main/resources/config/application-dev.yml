@@ -1,3 +1,6 @@
 # 服务器配置
 server:
   port: 80
+logging:
+  level:
+    org.fcx.mytool: info
