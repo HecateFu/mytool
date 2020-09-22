@@ -92,7 +92,7 @@ public class FqController {
             log.info("finish download {} ,time {} ms", link,(de - ds));
             if (StringUtils.isEmpty(raw)){
                 log.warn("can't download raw proxy info from link: {} ,check link",link);
-                return null;
+                return new ArrayList<>();
             }
             long ps = System.currentTimeMillis();
             List<Proxy> proxies = this.parseProxyList(raw);
@@ -101,7 +101,7 @@ public class FqController {
             return proxies;
         } catch (Exception e) {
             log.error("downloadAndParseProxies error link : "+link,e);
-            return null;
+            return new ArrayList<>();
         }
     }
 
