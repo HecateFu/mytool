@@ -9,3 +9,7 @@ logging:
     org.fcx.mytool: info
 mytool:
   proxy-links-file-path: file:proxy_links.json
+  proxy-host: 127.0.0.1
+  proxy-port: 7890
+  use-proxy: true
+
