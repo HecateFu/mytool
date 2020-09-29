@@ -29,7 +29,7 @@ public class ProxyCustomizer implements RestTemplateCustomizer {
         HttpClient client = HttpClientBuilder.create().setRoutePlanner(new DefaultProxyRoutePlanner(proxy) {
             @Override
             public HttpHost determineProxy(HttpHost target, HttpRequest request, HttpContext context) throws HttpException {
-                if(useProxy && target.getHostName().equals("raw.githubusercontent.com")) {
+                if(useProxy) { //&& target.getHostName().equals("raw.githubusercontent.com")
                     return super.determineProxy(target, request, context);
                 } else {
                     return null;
