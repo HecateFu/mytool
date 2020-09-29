@@ -65,6 +65,40 @@
                     </execution>
                 </executions>-->
             </plugin>
+            <plugin>
+                <groupId>io.openliberty.tools</groupId>
+                <artifactId>liberty-maven-plugin</artifactId>
+                <version>3.2</version>
+                <configuration>
+                    <!-- tag::appsDirectory[] -->
+                    <appsDirectory>apps</appsDirectory>
+                    <!-- end::appsDirectory[] -->
+                    <!-- tag::installAppPackages[] -->
+                    <installAppPackages>spring-boot-project</installAppPackages>
+                    <!-- 注释部分用于打包嵌入liberty的可执行jar -->
+                    <!-- end::installAppPackages[] -->
+                    <!-- tag::include[] -->
+                    <!-- <include>minify,runnable</include> -->
+                    <!-- end::include[] -->
+                    <!-- tag::packageFile[] -->
+                    <!-- <packageName>GSSpringBootApp</packageName> -->
+                    <!-- end::packageFile[] -->
+                </configuration>
+                <!-- tag::packageGoals[] -->
+                <!-- <executions>
+                  <execution>
+                    <id>package-server</id>
+                    <phase>package</phase>
+                    <goals>
+                      <goal>create</goal>
+                      <goal>install-feature</goal>
+                      <goal>deploy</goal>
+                      <goal>package</goal>
+                    </goals>
+                  </execution>
+                </executions> -->
+                <!-- end::packageGoals[] -->
+            </plugin>
         </plugins>
     </build>
 
