@@ -302,4 +302,5 @@
 "DOMAIN-SUFFIX,baeldung.com,Proxy",
 "DOMAIN-SUFFIX,quora.com,Proxy",
 "DOMAIN-SUFFIX,quoracdn.net,Proxy",
-"DOMAIN-SUFFIX,dzjs1.xyz,Proxy"]>
+"DOMAIN-SUFFIX,dzjs1.xyz,Proxy",
+"DOMAIN-SUFFIX,vfuc.ml,Proxy"]>
