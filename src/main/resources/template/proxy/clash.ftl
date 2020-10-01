@@ -8,11 +8,11 @@ secret: ''
 proxies:
 <#list proxies as proxy>
   <#if proxy.type == "vmess">
-  - {name: '${proxy?counter}${proxy.name}', server: ${proxy.server}, port: ${proxy.port?c}, type: ${proxy.type}, udp: true, uuid: ${proxy.uuid}, alterId: ${proxy.alterId?c}, cipher: auto, tls: ${proxy.tls?c}<#if proxy.network??>, network: ${proxy.network}</#if><#if proxy.wsPath??>, ws-path: ${proxy.wsPath}</#if><#if proxy.wsHeaders??>, ws-headers: {<#list proxy.wsHeaders as k,v>${k}: ${v}<#sep>,</#list>}</#if>}
+  - {name: '${proxy?counter} ${proxy.name}', server: ${proxy.server}, port: ${proxy.port?c}, type: ${proxy.type}, udp: true, uuid: ${proxy.uuid}, alterId: ${proxy.alterId?c}, cipher: auto, tls: ${proxy.tls?c}<#if proxy.network??>, network: ${proxy.network}</#if><#if proxy.wsPath??>, ws-path: ${proxy.wsPath}</#if><#if proxy.wsHeaders??>, ws-headers: {<#list proxy.wsHeaders as k,v>${k}: ${v}<#sep>,</#list>}</#if>}
   <#elseif proxy.type == "ss" && proxy.cipher != "rc4">
-  - {name: '${proxy?counter}${proxy.name}', server: ${proxy.server}, port: ${proxy.port?c}, type: ${proxy.type}, udp: true, cipher: ${proxy.cipher}, password: ${proxy.password}<#if proxy.plugin??>, plugin: ${proxy.plugin}, plugin-opts: {<#list proxy.pluginOpts as k,v>${k}: ${v}<#sep>,</#list>}</#if>}
+  - {name: '${proxy?counter} ${proxy.name}', server: ${proxy.server}, port: ${proxy.port?c}, type: ${proxy.type}, udp: true, cipher: ${proxy.cipher}, password: ${proxy.password}<#if proxy.plugin??>, plugin: ${proxy.plugin}, plugin-opts: {<#list proxy.pluginOpts as k,v>${k}: ${v}<#sep>,</#list>}</#if>}
   <#elseif proxy.type == "ssr" && proxy.cipher != "none" && proxy.cipher != "rc4">
-  - {name: '${proxy?counter}${proxy.name}', server: ${proxy.server}, port: ${proxy.port?c}, type: ${proxy.type}, udp: true, cipher: ${proxy.cipher}, password: ${proxy.password}, protocol: ${proxy.protocol}, protocol-param: ${proxy.protocolParam}, obfs: ${proxy.obfs}, obfs-param: ${proxy.obfsParam}}
+  - {name: '${proxy?counter} ${proxy.name}', server: ${proxy.server}, port: ${proxy.port?c}, type: ${proxy.type}, udp: true, cipher: ${proxy.cipher}, password: ${proxy.password}, protocol: ${proxy.protocol}, protocol-param: ${proxy.protocolParam}, obfs: ${proxy.obfs}, obfs-param: ${proxy.obfsParam}}
   </#if>
 </#list>
 proxy-groups:
@@ -22,7 +22,7 @@ proxy-groups:
       - fallback-auto
       <#list proxies as proxy>
       <#if (proxy.type == "ssr" && proxy.cipher != "none" && proxy.cipher != "rc4") || (proxy.type == "ss" && proxy.cipher != "rc4") || (proxy.type != "ssr" && proxy.type != "ss")>
-      - '${proxy?counter}${proxy.name}'
+      - '${proxy?counter} ${proxy.name}'
       </#if>
       </#list>
   - name: fallback-auto
@@ -32,7 +32,7 @@ proxy-groups:
     proxies:
       <#list proxies as proxy>
       <#if (proxy.type == "ssr" && proxy.cipher != "none" && proxy.cipher != "rc4") || (proxy.type == "ss" && proxy.cipher != "rc4") || (proxy.type != "ssr" && proxy.type != "ss")>
-      - '${proxy?counter}${proxy.name}'
+      - '${proxy?counter} ${proxy.name}'
       </#if>
       </#list>
   - name: Direct
