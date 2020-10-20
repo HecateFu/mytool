@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
+import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,7 +36,7 @@ public class FqControllerTest {
     public void decodeServerInfoTest() throws Exception{
         String link = "https://jiang.netlify.com/";
         String raw = fq.downloadProxyServersRaw(link);
-        List<Proxy> proxies = fq.parseProxyList(raw);
+        Set<Proxy> proxies = fq.parseProxyList(raw);
         proxies.stream().forEach(System.out::println);
     }
 

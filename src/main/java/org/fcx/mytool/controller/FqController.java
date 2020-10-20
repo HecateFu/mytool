@@ -11,6 +11,7 @@ import org.fcx.mytool.exception.MyException;
 import org.fcx.mytool.util.MyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,7 +36,7 @@ public class FqController {
     @Autowired
     private ProxyLinks proxyLinks;
 
-    private Map<String,List<Proxy>> proxiesMap = new HashMap<>();
+    private Map<String,Set<Proxy>> proxiesMap = new HashMap<>();
     @Autowired
     private RestTemplate rt;
 
@@ -64,7 +66,7 @@ public class FqController {
     @RequestMapping("config/{software}/{alias}")
     public ModelAndView getTpConfig(@PathVariable("software")String software, @PathVariable("alias")String alias, HttpServletRequest servletRequest){
 
-        List<Proxy> proxies = proxiesMap.get(alias);
+        Set<Proxy> proxies = proxiesMap.get(alias);
 
         if(CollectionUtils.isEmpty(proxies)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"not found alias :"+alias);
@@ -83,41 +85,60 @@ public class FqController {
      * @param link
      * @return
      */
-    public List<Proxy> downloadAndParseProxies(String link){
+    public Set<Proxy> downloadAndParseProxies(String link){
         try {
-//            log.info("start download server from {}", link);
             long ds = System.currentTimeMillis();
             String raw = this.downloadProxyServersRaw(link);
             long de = System.currentTimeMillis();
             log.info("finish download {} ,time {} ms", link,(de - ds));
             if (StringUtils.isEmpty(raw)){
                 log.warn("can't download raw proxy info from link: {} ,check link",link);
-                return new ArrayList<>();
+                return new HashSet<>();
             }
             long ps = System.currentTimeMillis();
-            List<Proxy> proxies = this.parseProxyList(raw);
+            Set<Proxy> proxies = this.parseProxyList(raw);
             long pe = System.currentTimeMillis();
             log.info("parse {} proxy list {} ms", link, pe - ps);
             return proxies;
         } catch (Exception e) {
             log.error("downloadAndParseProxies error link : "+link,e);
-            return new ArrayList<>();
+            return new HashSet<>();
         }
+    }
+
+    /**
+     * 手动触发订阅刷新
+     */
+    @RequestMapping("refresh")
+    @ResponseBody
+    public String refresh() {
+        preLoadProxies();
+        return "success";
+    }
+
+    /**
+     * 定时触发订阅刷新
+     */
+    @Scheduled(cron = "0 0 * * * ?")
+    public void autoRefresh() {
+        log.info("auto refresh start");
+        preLoadProxies();
+        log.info("auto refresh end");
     }
 
     /**
      * 访问所有的订阅地址、解析结果、并把节点在本地缓存
      */
-    @RequestMapping("refresh")
-    @ResponseBody
-    public String preLoadProxies() {
+    public synchronized void preLoadProxies() {
+        long start = System.currentTimeMillis();
         proxiesMap = proxyLinks.linksMap.entrySet().parallelStream().map(link -> {
             String key = link.getKey();
             String value = link.getValue();
-            List<Proxy> proxies = downloadAndParseProxies(value);
+            Set<Proxy> proxies = downloadAndParseProxies(value);
             return new HashMap.SimpleEntry<>(key,proxies);
         }).collect(Collectors.toMap(Map.Entry::getKey,Map.Entry::getValue));
-        return "success";
+        long end = System.currentTimeMillis();
+        log.info("preLoadProxies elapsed {} ms",(end-start));
     }
 
     @GetMapping("updatelink")
@@ -166,10 +187,14 @@ public class FqController {
      * @param raw
      * @return
      */
-    public List<Proxy> parseProxyList(String raw) {
+    public Set<Proxy> parseProxyList(String raw) {
         String first = MyUtil.base64Decode(raw);
         String[] links = first.split("\n");
-        List<Proxy> proxyList = new ArrayList<>();
+        Set<Proxy> proxyList = new TreeSet<>((proxy1,proxy2) -> {
+            String p1 = proxy1.getServer()+proxy1.getPort();
+            String p2 = proxy2.getServer()+proxy2.getPort();
+            return p1.compareTo(p2);
+        });
         for (String s : links) {
             try {
                 Proxy proxy = Proxy.factory(s);

@@ -4,7 +4,6 @@ spring:
     suffix: .ftl
 # 日志
 logging:
-  file: mytool.log
   level:
     org.fcx.mytool: info
 mytool:
@@ -12,4 +11,8 @@ mytool:
   proxy-host: 127.0.0.1
   proxy-port: 7890
   use-proxy: true
-
+  init-proxies: true
+server:
+  tomcat:
+    min-spare-threads: 1
+    max-threads: 5
