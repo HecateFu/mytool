@@ -74,7 +74,22 @@ public class SS extends Proxy {
                 }
                 setName(otherFields[1]);
             } else {
-                throw new MyException("unsupport ss link format : "+urlDecoded);
+                String serverDecoded = MyUtil.base64Decode(raw);
+                String noName = "\\S+:\\S+@\\S+:\\d+";
+                if(serverDecoded.matches(noName)){
+                    int lastAt = serverDecoded.lastIndexOf("@");
+                    String encryptStr = serverDecoded.substring(0,lastAt);
+                    String serverStr = serverDecoded.substring(lastAt+1);
+                    String[] encryptFields = encryptStr.split(":");
+                    this.cipher = encryptFields[0];
+                    this.password = encryptFields[1];
+                    String[] serverFields = serverStr.split(":");
+                    setName(serverFields[0]);
+                    setServer(serverFields[0]);
+                    setPort(Integer.parseInt(serverFields[1]));
+                } else {
+                    throw new MyException("unsupport ss link format : " + urlDecoded);
+                }
             }
         } catch (UnsupportedEncodingException e) {
             MyException myex = new MyException("ss link url decode failed : "+e.getMessage());
