@@ -11,8 +11,8 @@ proxies:
   - {name: '${proxy?counter} ${proxy.name}', server: ${proxy.server}, port: ${proxy.port?c}, type: ${proxy.type}, udp: true, uuid: ${proxy.uuid}, alterId: ${proxy.alterId?c}, cipher: auto, tls: ${proxy.tls?c}<#if proxy.network??>, network: ${proxy.network}</#if><#if proxy.wsPath??>, ws-path: ${proxy.wsPath}</#if><#if proxy.wsHeaders??>, ws-headers: {<#list proxy.wsHeaders as k,v>${k}: ${v}<#sep>,</#list>}</#if>}
   <#elseif proxy.type == "ss" && proxy.cipher != "rc4">
   - {name: '${proxy?counter} ${proxy.name}', server: ${proxy.server}, port: ${proxy.port?c}, type: ${proxy.type}, udp: true, cipher: ${proxy.cipher}, password: ${proxy.password}<#if proxy.plugin??>, plugin: ${proxy.plugin}, plugin-opts: {<#list proxy.pluginOpts as k,v>${k}: ${v}<#sep>,</#list>}</#if>}
-  <#elseif proxy.type == "ssr" && proxy.cipher != "none" && proxy.cipher != "rc4">
-  - {name: '${proxy?counter} ${proxy.name}', server: ${proxy.server}, port: ${proxy.port?c}, type: ${proxy.type}, udp: true, cipher: ${proxy.cipher}, password: ${proxy.password}, protocol: ${proxy.protocol}, protocol-param: ${proxy.protocolParam}, obfs: ${proxy.obfs}, obfs-param: ${proxy.obfsParam}}
+  <#elseif proxy.type == "ssr" && proxy.cipher != "none" && proxy.cipher != "rc4" && proxy.cipher != "chacha20">
+  - {name: '${proxy?counter} ${proxy.name}', server: ${proxy.server}, port: ${proxy.port?c}, type: ${proxy.type}, udp: true, cipher: ${proxy.cipher}, password: ${proxy.password}, protocol: ${proxy.protocol}, obfs: ${proxy.obfs}<#if proxy.protocolParam??>, protocol-param: ${proxy.protocolParam}</#if><#if proxy.obfsParam??>, obfs-param: ${proxy.obfsParam}</#if>}
   <#elseif proxy.type == "trojan">
   - {name: '${proxy?counter} ${proxy.name}', server: ${proxy.server}, port: ${proxy.port?c}, type: ${proxy.type}, udp: true, password: ${proxy.password}}
   </#if>
@@ -23,7 +23,7 @@ proxy-groups:
     proxies:
       - fallback-auto
       <#list proxies as proxy>
-      <#if (proxy.type == "ssr" && proxy.cipher != "none" && proxy.cipher != "rc4") || (proxy.type == "ss" && proxy.cipher != "rc4") || (proxy.type != "ssr" && proxy.type != "ss")>
+      <#if (proxy.type == "ssr" && proxy.cipher != "none" && proxy.cipher != "rc4" && proxy.cipher != "chacha20") || (proxy.type == "ss" && proxy.cipher != "rc4") || (proxy.type != "ssr" && proxy.type != "ss")>
       - '${proxy?counter} ${proxy.name}'
       </#if>
       </#list>
@@ -33,7 +33,7 @@ proxy-groups:
     interval: 300
     proxies:
       <#list proxies as proxy>
-      <#if (proxy.type == "ssr" && proxy.cipher != "none" && proxy.cipher != "rc4") || (proxy.type == "ss" && proxy.cipher != "rc4") || (proxy.type != "ssr" && proxy.type != "ss")>
+      <#if (proxy.type == "ssr" && proxy.cipher != "none" && proxy.cipher != "rc4" && proxy.cipher != "chacha20") || (proxy.type == "ss" && proxy.cipher != "rc4") || (proxy.type != "ssr" && proxy.type != "ss")>
       - '${proxy?counter} ${proxy.name}'
       </#if>
       </#list>
