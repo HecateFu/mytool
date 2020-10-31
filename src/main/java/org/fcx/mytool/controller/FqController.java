@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -43,7 +42,7 @@ public class FqController {
     @ResponseBody
     @RequestMapping("config/{alias}.yml")
     public String getConfig(@PathVariable("alias")String alias){
-        List<Proxy> proxies = proxiesMap.get(alias);
+        Set<Proxy> proxies = proxiesMap.get(alias);
 
         if(CollectionUtils.isEmpty(proxies)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"not found alias :"+alias);

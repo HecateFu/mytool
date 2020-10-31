@@ -3,7 +3,6 @@ package org.fcx.mytool.entity.proxy.clash;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.fcx.mytool.exception.MyException;
 import org.fcx.mytool.util.MyUtil;
 import org.springframework.util.CollectionUtils;
@@ -11,8 +10,8 @@ import org.springframework.util.CollectionUtils;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -41,7 +40,7 @@ public class Config {
     // 路由规则
     private List<String> rules;
 
-    public Config(List<Proxy> proxies){
+    public Config(Set<Proxy> proxies){
         // 代理节点
         if(CollectionUtils.isEmpty(proxies)){
             throw new MyException("该链接没有可用节点");

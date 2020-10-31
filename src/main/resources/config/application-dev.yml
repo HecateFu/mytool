@@ -10,3 +10,5 @@ spring:
 logging:
   level:
     org.fcx.mytool: info
+mytool:
+  init-proxies: false
