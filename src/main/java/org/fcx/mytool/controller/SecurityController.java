@@ -48,7 +48,7 @@ public class SecurityController {
 
     public String downloadFundData () {
 
-        String url = "http://fund.eastmoney.com/data/rankhandler.aspx?op=ph&dt=kf&ft=all&rs=&gs=0&sc=zzf&st=desc&sd=2018-01-01&ed=2018-12-31&qdii=&tabSubtype=,,,,,&pi=1&pn=10000&dx=1&v=0.5065587004601584";
+        String url = "http://fund.eastmoney.com/data/rankhandler.aspx?op=ph&dt=kf&ft=all&rs=&gs=0&sc=zzf&st=desc&sd=2019-10-26&ed=2020-10-26&qdii=&tabSubtype=,,,,,&pi=1&pn=10000&dx=1&v=0.9431083473920867";
         HttpGet get = new HttpGet(url);
         get.addHeader("Connection","keep-alive");
         get.addHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36 Edg/84.0.522.40");
