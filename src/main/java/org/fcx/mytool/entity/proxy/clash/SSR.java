@@ -69,7 +69,7 @@ public class SSR extends Proxy {
                         if(obfs.equals("plain")){
                             this.obfsParam = "plain";
                         } else {
-                            throw new MyException("create ssr miss obfs-param obfs: "+obfs+",serverInfo: "+decodeServer);
+                            log.warn("create ssr miss obfs-param obfs: "+obfs+",serverInfo: "+decodeServer);
                         }
                     } else {
                         this.obfsParam = MyUtil.base64UrlDecode(kv[1]);
@@ -80,7 +80,7 @@ public class SSR extends Proxy {
                         if(protocol.equals("origin")){
                             this.protocolParam = "origin";
                         } else {
-                            throw new MyException("create ssr miss protocol-param protocol: "+protocol+",serverInfo: "+decodeServer);
+                            log.warn("create ssr miss protocol-param protocol: "+protocol+",serverInfo: "+decodeServer);
                         }
                     } else {
                         this.protocolParam = MyUtil.base64UrlDecode(kv[1]);
