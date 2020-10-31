@@ -24,8 +24,8 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class WebUtilConfig {
 
-    @Profile("pro")
-    @Bean
+//    @Profile("pro")
+//    @Bean
     public Connector httpConnector(){
         Connector connector=new Connector("org.apache.coyote.http11.Http11NioProtocol");
         connector.setScheme("http");
@@ -36,8 +36,8 @@ public class WebUtilConfig {
         connector.setRedirectPort(443);
         return connector;
     }
-    @Profile("pro")
-    @Bean
+//    @Profile("pro")
+//    @Bean
     public TomcatServletWebServerFactory tomcatServletWebServerFactory(Connector connector){
         TomcatServletWebServerFactory tomcat=new TomcatServletWebServerFactory(){
             @Override
