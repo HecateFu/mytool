@@ -29,7 +29,7 @@ public class Trojan extends Proxy {
             this.password = sa1[0];
             // 节点名称
             String[] sa2 = sa1[1].split("#");
-            setName(URLDecoder.decode(sa2[1], StandardCharsets.UTF_8.name()));
+            setName(URLDecoder.decode(sa2[1], StandardCharsets.UTF_8.name()).trim());
             // 服务器
             String[] sa3 = sa2[0].split(":");
             setServer(sa3[0]);
