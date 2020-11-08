@@ -172,6 +172,8 @@ public class FqController {
                 proxyList.add(proxy);
             } catch (MyException ex) {
                 log.warn(ex.getMessage());
+            } catch (Exception e) {
+                log.error("parse link error link:"+s,e);
             }
         }
         return proxyList;

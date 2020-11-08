@@ -3,4 +3,4 @@ server:
   port: 80
 logging:
   level:
-    org.fcx.mytool: info
+    org.fcx.mytool: debug

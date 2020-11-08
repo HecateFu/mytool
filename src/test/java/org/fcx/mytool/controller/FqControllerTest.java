@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(properties = "mytool.init-proxies=false")
 @ActiveProfiles("dev")
 @AutoConfigureMockMvc
 public class FqControllerTest {
