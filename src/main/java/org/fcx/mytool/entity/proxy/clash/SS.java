@@ -36,11 +36,25 @@ public class SS extends Proxy {
         super("ss");
         String raw = link.substring(5);
         try {
-            String urlDecoded = URLDecoder.decode(raw, StandardCharsets.UTF_8.name());
+            String urlDecoded = URLDecoder.decode(raw.trim(), StandardCharsets.UTF_8.name());
             log.debug(urlDecoded);
-            String noPlugin = "[a-zA-z0-9+/=]+#.+";
-            String hasPlugin = "[a-zA-Z0-9+/=]+@\\S+/?\\?plugin=\\S+";
-            if(urlDecoded.matches(noPlugin)){
+            String p0 = "[a-zA-z0-9+/=]+/#\\S+";
+            String p1 = "[a-zA-z0-9+/=]+#.+";
+            String p2 = "[a-zA-Z0-9+/=]+@\\S+/?\\?plugin=\\S+";
+            if(urlDecoded.matches(p0)){
+                String[] fields = urlDecoded.split("/#");
+                setName(fields[1]);
+                String serverDecoded = MyUtil.base64Decode(fields[0]);
+                int lastAt = serverDecoded.lastIndexOf("@");
+                String encryptStr = serverDecoded.substring(0,lastAt);
+                String serverStr = serverDecoded.substring(lastAt+1);
+                String[] encryptFields = encryptStr.split(":");
+                this.cipher = encryptFields[0];
+                this.password = encryptFields[1];
+                String[] serverFields = serverStr.split(":");
+                setServer(serverFields[0]);
+                setPort(Integer.parseInt(serverFields[1]));
+            }else if(urlDecoded.matches(p1)){
                 String[] fields = urlDecoded.split("#");
                 setName(fields[1]);
                 String serverDecoded = MyUtil.base64Decode(fields[0]);
@@ -53,7 +67,7 @@ public class SS extends Proxy {
                 String[] serverFields = serverStr.split(":");
                 setServer(serverFields[0]);
                 setPort(Integer.parseInt(serverFields[1]));
-            }else if(urlDecoded.matches(hasPlugin)){
+            }else if(urlDecoded.matches(p2)){
                 String[] fields = urlDecoded.split("/?\\?");
                 String[] proxyFields = fields[0].split("@");
                 String encryptDecoded = MyUtil.base64Decode(proxyFields[0]);

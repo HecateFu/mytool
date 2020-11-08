@@ -9,6 +9,6 @@ spring:
     password: fcx9mysql
 logging:
   level:
-    org.fcx.mytool: info
+    org.fcx.mytool: debug
 mytool:
   init-proxies: false
