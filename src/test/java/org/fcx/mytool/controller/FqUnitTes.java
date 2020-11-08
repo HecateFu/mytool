@@ -8,7 +8,7 @@ import java.time.LocalTime;
 public class FqUnitTes {
     @Test
     public void trojanTest() {
-        String l0 = "ss://YWVzLTI1Ni1nY206eHBRd3lWNFc1RmRBNk5NQU5KSng3M1VTQDIuNTguMjQxLjI3OjM4MDMz/#shadowsocks%2F2.58.241.27%3A38033-iwcqe";
+        String l0 = "ss://YWVzLTI1Ni1nY206eHBRd3lWNFc1RmRBNk5NQU5KSng3M1VTQDIuNTguMjQxLjI3OjM4MDMz/#shadowsocks%2F2.58.241.27%3A38033-iwcqe\r";
         Proxy proxy0 = Proxy.factory(l0);
         System.out.println(proxy0);
     }

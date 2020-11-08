@@ -36,7 +36,7 @@ public class SS extends Proxy {
         super("ss");
         String raw = link.substring(5);
         try {
-            String urlDecoded = URLDecoder.decode(raw, StandardCharsets.UTF_8.name());
+            String urlDecoded = URLDecoder.decode(raw.trim(), StandardCharsets.UTF_8.name());
             log.debug(urlDecoded);
             String p0 = "[a-zA-z0-9+/=]+/#\\S+";
             String p1 = "[a-zA-z0-9+/=]+#.+";
